@@ -1,0 +1,15 @@
+package legorobot;
+
+import lejos.nxt.*;
+public class HelloWorld { 
+    public static void main(String[] args) {
+        Motor.B.forward();
+        Motor.C.forward();
+        
+        Button.waitForAnyPress();
+        Motor.B.stop();
+        Motor.C.stop();
+        
+        
+    }
+}
