@@ -1,0 +1,61 @@
+package linefollower;
+
+import lejos.nxt.LCD;
+import lejos.nxt.LightSensor;
+import lejos.nxt.Motor;
+import lejos.nxt.SensorPort;
+import lejos.robotics.navigation.DifferentialPilot;
+import lejos.robotics.subsumption.Behavior;
+
+public class FollowLine implements Behavior {
+	private boolean suppressed = false;
+	private int threshhold = 440;
+	
+	public boolean takeControl() {
+		return true;
+	}
+	public void suppress() {
+		suppressed = true;
+	}
+	public void action() {
+        DifferentialPilot pilot = new DifferentialPilot(56.0,170.0,Motor.B,Motor.C);
+        LightSensor l1 = new LightSensor(SensorPort.S2);
+        LightSensor l2 = new LightSensor(SensorPort.S3);
+        l1.setFloodlight(true);
+        l2.setFloodlight(true);
+        int x = 3;
+        suppressed = false;
+        while (!suppressed) {
+	    	if(l1.getNormalizedLightValue() < threshhold){
+	    		if(l2.getNormalizedLightValue()< threshhold) {
+	    			//junction or corner
+	    			if (x != 1) {
+	    				x = 1;
+	    				pilot.steer(50);
+	    			}
+	    			
+	    		} else {
+	    			//corner
+	    			if (x != 1) {
+	    				x = 1;
+	    				pilot.steer(50);
+	    			}
+	    		}
+	    	} else if(l2.getNormalizedLightValue()< threshhold){
+	    		//corner
+	    		if (x != 2) {
+	    			x = 2;
+	    			pilot.steer(-50);
+	    		}
+	    	} else {
+	    		//straight line or end of line
+	    		if (x != 0) {
+	    			x = 0;
+	    			pilot.forward();
+	    		}
+	    	}
+	    	LCD.drawInt(l1.getNormalizedLightValue(), 4, 0, 1);
+	    	LCD.drawInt(l2.getNormalizedLightValue(), 4, 0, 2);
+        }
+	}
+}
