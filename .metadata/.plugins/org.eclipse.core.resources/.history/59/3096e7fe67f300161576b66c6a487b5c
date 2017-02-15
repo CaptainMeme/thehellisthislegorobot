@@ -1,0 +1,8 @@
+package linefollowerbehaviours;
+
+public class CornerType {
+	public int corner;
+	public CornerType(){
+		this.corner = 0;
+	}
+}

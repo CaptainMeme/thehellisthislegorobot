@@ -1,0 +1,28 @@
+package linefollowerbehaviours;
+
+import lejos.nxt.LightSensor;
+import lejos.nxt.Motor;
+import lejos.robotics.navigation.DifferentialPilot;
+import lejos.robotics.subsumption.Behavior;
+
+public class MoveOn implements Behavior {
+	private boolean suppressed = false;
+	private DifferentialPilot pilot;
+	public MoveOn(DifferentialPilot pilot){
+		this.pilot = pilot;
+	}
+	public boolean takeControl(){
+		return true;
+	}
+	public void suppress() {
+		suppressed = true;
+	}
+	public void action() {
+        pilot.setTravelSpeed(150);
+        suppressed = false;
+    	pilot.steer(0);
+        while (!suppressed) {
+            Thread.yield();
+        }
+	}
+}

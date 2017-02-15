@@ -1,0 +1,18 @@
+package linefollowerbehaviours;
+import lejos.nxt.*;
+import lejos.robotics.subsumption.*;
+
+public class LineFollowerArbitrator {
+	public static void main(String args[]) {
+		Behavior[] beh;
+		beh = new Behavior[3];
+		beh[2] = new MoveOn();
+		beh[1] = new GoLeft(); //Life is peaceful there
+		beh[0] = new GoRight();
+		private int threshhold = 440;
+		
+		Arbitrator arb = new Arbitrator(beh,true);
+		arb.start();
+	}
+}
+
