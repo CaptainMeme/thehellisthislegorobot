@@ -21,22 +21,17 @@ public class GoRight implements Behavior {
 		this.corner = corner;
 	}
 	public boolean takeControl(){
-		return (l1.getNormalizedLightValue()< threshhold && this.corner.turn != 1);
+		return (l1.getNormalizedLightValue()< threshhold);
 	}
 	public void suppress() {
 		suppressed = true;
 	}
 	public void action() {
-		this.corner.turn = -1;
         pilot.setTravelSpeed(75);
         suppressed = false;
     	pilot.steer(-150);
         while (!suppressed && l1.getNormalizedLightValue()< threshhold) {
-        	this.corner.timesincelineseen = 0;
-        	this.corner.CT(l1.getNormalizedLightValue(), l2.getNormalizedLightValue());
-	    	LCD.drawInt(l1.getNormalizedLightValue(), 4, 0, 1);
-	    	LCD.drawInt(l2.getNormalizedLightValue(), 4, 0, 2);
-	    	LCD.drawString("Right    ", 0, 3);
+    		this.corner.timesincelineseen = 0;
         }
 	}
 }

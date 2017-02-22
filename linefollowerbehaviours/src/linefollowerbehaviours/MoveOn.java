@@ -1,5 +1,5 @@
 package linefollowerbehaviours;
-
+import lejos.nxt.LCD;
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.robotics.navigation.DifferentialPilot;
@@ -25,16 +25,14 @@ public class MoveOn implements Behavior {
 		suppressed = true;
 	}
 	public void action() {
-		this.corner.turn = 0;
         pilot.setTravelSpeed(75);
         suppressed = false;
     	pilot.steer(0);
         while (!suppressed) {
-        	this.corner.CT(l1.getNormalizedLightValue(), l2.getNormalizedLightValue());
         	this.corner.timesincelineseen++;
-	    	LCD.drawInt(l1.getNormalizedLightValue(), 4, 0, 1);
-	    	LCD.drawInt(l2.getNormalizedLightValue(), 4, 0, 2);
-	    	LCD.drawString("Forwards", 0, 3);
+        	LCD.drawInt(corner.timesincelineseen, 0, 1);
+        	Thread.yield();
+        	
         }
 	}
 }
