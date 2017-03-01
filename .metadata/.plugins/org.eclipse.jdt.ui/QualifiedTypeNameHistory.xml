@@ -3,4 +3,5 @@
 <fullyQualifiedTypeName name="lejos.robotics.navigation.DifferentialPilot"/>
 <fullyQualifiedTypeName name="lejos.nxt.Button"/>
 <fullyQualifiedTypeName name="java.lang.Thread"/>
+<fullyQualifiedTypeName name="java.util.Random"/>
 </qualifiedTypeNameHistroy>

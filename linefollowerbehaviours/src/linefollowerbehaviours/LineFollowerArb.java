@@ -16,8 +16,8 @@ public class LineFollowerArb {
 		beh[1] = new GoLeft(l1, l2, pilot, corner); //Life is peaceful there
 		beh[2] = new GoRight(l1, l2, pilot, corner);
 		beh[3] = new FindLine(l1, l2, pilot, corner);
-		beh[4] = new DetectJunction(l1,l2,pilot,corner);
-		beh[5] = new DetectObstacle(pilot,u1);
+		beh[4] = new DetectObstacle(pilot,u1);
+		beh[5] = new DetectJunction(l1,l2,pilot,corner);
 		Button.waitForAnyPress();
 		Arbitrator arb = new Arbitrator(beh,true);
 		arb.start();

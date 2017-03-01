@@ -4,6 +4,9 @@ import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.subsumption.Behavior;
+
+import java.util.Random;
+
 import lejos.nxt.LCD;
 
 public class DetectJunction implements Behavior {
@@ -11,12 +14,13 @@ public class DetectJunction implements Behavior {
 	private DifferentialPilot pilot;
 	private LightSensor l1;
 	private LightSensor l2;
-	private int threshhold = 440;
+	private int threshhold = 420;
 	private CornerType corner;
+	private boolean flag;
 	public DetectJunction(LightSensor l1, LightSensor l2, DifferentialPilot pilot, CornerType corner){
 		this.pilot = pilot;
-		this.l1 = l1;
-		this.l2 = l2;
+		this.l1 = l2;
+		this.l2 = l1;
 		this.corner = corner;
 	}
 	public boolean takeControl(){
@@ -26,7 +30,8 @@ public class DetectJunction implements Behavior {
 		suppressed = true;
 	}
 	public void action() {
-		pilot.travel(67.0);
+		flag = false;
+		pilot.travel(50.0);
 		if (!suppressed){
 			pilot.steer(200,360,true);
 		}
@@ -44,20 +49,48 @@ public class DetectJunction implements Behavior {
 				while (!suppressed && pilot.isMoving()){
 					if (l1.getNormalizedLightValue()<threshhold){
 						outs[i] = true;
+						flag = true;
 					}
 				}
 			}
 		}
-		while (!suppressed){
-			Thread.yield();
-			for (int i = 0; i < 4; i ++){
-				if (outs[i]){
-					LCD.drawString("Path Out       ", 0, i);
+		if (!flag){
+			LCD.drawString("What is hapen D:       ", 0, 0);
+		}
+		else {
+			int options = 0;
+			if (!suppressed){
+				for (int i = 0; i < 4; i ++){
+					if (outs[i]){
+						LCD.drawString("Path Out       ", 0, i);
+						options++;
+					}
+					else {
+						LCD.drawString("No Way Out     ", 0, i);
+					}
+		    	}
+				Random rand = new Random();
+				int choice = rand.nextInt(options);
+				int i = -1;
+				LCD.drawInt(options, 0, 5);
+				LCD.drawInt(choice, 0, 6);
+				while (choice >= 0){
+					if (outs[++i]){
+						choice--;
+					}
 				}
-				else {
-					LCD.drawString("No Way Out     ", 0, i);
-				}
-	    	}
+				LCD.drawInt(i, 0, 7);
+				pilot.steer(200, 90*(i) - 45);
+			}
+			if (!suppressed){
+				pilot.steer(200,-360,true);
+			}
+			while (l1.getNormalizedLightValue()>threshhold && !suppressed){
+				Thread.yield();
+			}
+			if (!suppressed){
+				pilot.steer(200, 0);
+			}
 		}
 	}
 }

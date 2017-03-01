@@ -14,12 +14,13 @@ public class DetectObstacle implements Behavior {
 		this.u1 = u1;
 	}
 	public boolean takeControl(){
-		return u1.getDistance()<4.0; //needs testing...
+		return u1.getDistance()<7.0; //needs testing...
 	}
 	public void suppress() {
 		suppressed = true;
 	}
 	public void action() {
+		pilot.travel(-20);
 		pilot.steer(200,180);
 	}
 }

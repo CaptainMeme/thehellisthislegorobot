@@ -27,7 +27,7 @@ public class GoLeft implements Behavior {
 		suppressed = true;
 	}
 	public void action() {
-        pilot.setTravelSpeed(75);
+        pilot.setTravelSpeed(50);
         suppressed = false;
     	pilot.steer(150);
         while (!suppressed && l2.getNormalizedLightValue()< threshhold) {

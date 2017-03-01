@@ -1,0 +1,80 @@
+package linefollowerbehaviours;
+
+import lejos.nxt.LightSensor;
+import lejos.nxt.Motor;
+import lejos.robotics.navigation.DifferentialPilot;
+import lejos.robotics.subsumption.Behavior;
+import lejos.nxt.LCD;
+
+public class DetectJunction implements Behavior {
+	private boolean suppressed = false;
+	private DifferentialPilot pilot;
+	private LightSensor l1;
+	private LightSensor l2;
+	private int threshhold = 420;
+	private CornerType corner;
+	private boolean flag;
+	public DetectJunction(LightSensor l1, LightSensor l2, DifferentialPilot pilot, CornerType corner){
+		this.pilot = pilot;
+		this.l1 = l2;
+		this.l2 = l1;
+		this.corner = corner;
+	}
+	public boolean takeControl(){
+		return l1.getNormalizedLightValue()<threshhold && l2.getNormalizedLightValue()<threshhold;
+	}
+	public void suppress() {
+		suppressed = true;
+	}
+	public void action() {
+		flag = false;
+		pilot.travel(67.0);
+		if (!suppressed){
+			pilot.steer(200,360,true);
+		}
+		boolean[] outs = new boolean[4];
+		while (l1.getNormalizedLightValue()>threshhold && !suppressed){
+			Thread.yield();
+		}
+		if (!suppressed){
+			pilot.steer(200, 45, true);
+		}
+		for (int i = 0; i < 4; i ++){
+			outs[i] = false;
+			if (!suppressed){
+				pilot.steer(200, 90, true);
+				while (!suppressed && pilot.isMoving()){
+					if (l1.getNormalizedLightValue()<threshhold){
+						outs[i] = true;
+						flag = true;
+					}
+				}
+			}
+		}
+		if (!flag){
+			LCD.drawString("What is hapen D:       ", 0, 0);
+		}
+		else {
+			int options = 0;
+			if (!suppressed){
+				for (int i = 0; i < 4; i ++){
+					if (outs[i]){
+						LCD.drawString("Path Out       ", 0, i);
+						options++;
+					}
+					else {
+						LCD.drawString("No Way Out     ", 0, i);
+					}
+		    	}
+				int choice = (int) Math.floor(Math.random()* options);
+				int i = -1;
+				while (choice >= 0){
+					if (outs[++i]){
+						choice--;
+					}
+				}
+				pilot.steer(200, 90*(i) - 45);
+			}
+		}
+	}
+}

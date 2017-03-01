@@ -26,7 +26,7 @@ public class FindLine implements Behavior {
 		suppressed = true;
 	}
 	public void action() {
-        pilot.setTravelSpeed(75);
+        pilot.setTravelSpeed(50);
         suppressed = false;
     	pilot.steer(200, 360, true);
         while (!suppressed && this.corner.timesincelineseen > 4000) {
